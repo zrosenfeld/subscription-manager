@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CARDS, CARRIERS, SERVICES } from "@/lib/data";
 import { optimize } from "@/lib/optimizer";
 import type { Household, OptimizationResult, RecommendationType, UserSub } from "@/lib/types";
+import UserNav from "@/components/user-nav";
 
 type Step = "services" | "carrier" | "cards" | "household" | "review" | "results";
 
@@ -85,11 +86,14 @@ export default function Dashboard() {
           <span className="font-bold text-[17px] tracking-tight">
             sub<span className="text-neutral-600">stack</span>
           </span>
-          {step !== "services" && (
-            <button onClick={goBack} className="text-neutral-600 text-sm hover:text-neutral-400 transition-colors">
-              ← Back
-            </button>
-          )}
+          <div className="flex items-center gap-4">
+            {step !== "services" && (
+              <button onClick={goBack} className="text-neutral-600 text-sm hover:text-neutral-400 transition-colors">
+                ← Back
+              </button>
+            )}
+            <UserNav />
+          </div>
         </div>
 
         {/* STEP 1: Services */}
@@ -227,10 +231,6 @@ export default function Dashboard() {
                       <span className="text-sm font-medium">{selected ? "✓ " : ""}{c.name}</span>
                       <span className="text-xs text-neutral-600">{c.fee > 0 ? `$${c.fee}/yr fee` : "No fee"}</span>
                     </div>
-                    {c.streamingCredit && <p className="text-xs text-green-500 mt-1">💳 Up to ${c.streamingCredit}/mo streaming credit</p>}
-                    {c.cashbackRate && <p className="text-xs text-green-500 mt-1">💳 {c.cashbackRate * 100}% back on streaming</p>}
-                    {c.disneyCredit && <p className="text-xs text-green-500 mt-1">💳 ${c.disneyCredit}/mo Disney credit</p>}
-                    {c.pointsMultiplier && <p className="text-xs text-neutral-600 mt-1">💳 {c.pointsMultiplier}x points on streaming</p>}
                   </button>
                 );
               })}

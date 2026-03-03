@@ -1,8 +1,12 @@
 import Link from "next/link";
+import UserNav from "@/components/user-nav";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#060708] text-neutral-300 flex flex-col items-center justify-center px-5">
+      <div className="absolute top-4 right-5">
+        <UserNav />
+      </div>
       <div className="max-w-lg text-center">
         <p className="text-sm text-neutral-600 uppercase tracking-widest font-semibold mb-4">substack</p>
         <h1 className="text-4xl font-bold tracking-tight text-neutral-100 mb-4">
