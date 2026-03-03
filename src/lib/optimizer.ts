@@ -1,13 +1,18 @@
-import { CARDS, CARRIERS, SERVICES } from "./data";
-import type { Household, OptimizationResult, Recommendation, UserSub } from "./types";
+import type { Card, Carrier, Household, OptimizationResult, Recommendation, Service, UserSub } from "./types";
 
 export function optimize(
   userSubs: UserSub[],
   userCarrier: string,
   userCards: string[],
   userHousehold: Household & { totalMembers: number },
-  userWants: UserSub[]
+  userWants: UserSub[],
+  data: {
+    services: Record<string, Service>;
+    carriers: Record<string, Carrier>;
+    cards: Record<string, Card>;
+  }
 ): OptimizationResult {
+  const { services: SERVICES, carriers: CARRIERS, cards: CARDS } = data;
   const recommendations: Recommendation[] = [];
   let totalCurrentMonthly = 0;
 
