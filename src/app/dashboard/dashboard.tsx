@@ -206,15 +206,11 @@ export default function Dashboard({
                 <button
                   key={id}
                   onClick={() => { setCarrier(id); setStep("cards"); }}
-                  className={`px-4.5 py-3.5 rounded-xl text-left border text-sm transition-all flex justify-between items-center
+                  className={`px-4.5 py-3.5 rounded-xl text-left border text-sm transition-all
                     ${carrier === id ? "border-white/20 bg-white/[0.06]" : "border-white/[0.07] bg-white/[0.025] hover:bg-white/[0.04]"}
                   `}
                 >
                   <span className="text-neutral-300">{c.name}</span>
-                  {c.freeServices && c.freeServices.length > 0 && (
-                    <span className="text-[11px] text-green-500">has streaming perks</span>
-                  )}
-                  {c.perks && <span className="text-[11px] text-green-500">$10/mo perks available</span>}
                 </button>
               ))}
             </div>
@@ -298,24 +294,51 @@ export default function Dashboard({
           <div className="animate-in fade-in slide-in-from-bottom-3 duration-300">
             <h2 className="text-2xl font-bold tracking-tight mb-1">Any changes you want to make?</h2>
             <p className="text-neutral-500 text-sm mb-6">Mark services you want to drop, or we'll optimize everything as-is.</p>
-            <div className="flex flex-col gap-1 mb-6">
-              {userSubs.map((s) => {
-                const svc = SERVICES[s.serviceId];
-                return (
-                  <div
-                    key={s.serviceId}
-                    onClick={() => toggleWantRemoved(s.serviceId)}
-                    className={`flex justify-between items-center px-4 py-3 rounded-xl border cursor-pointer transition-all
-                      ${s.wantsRemoved ? "bg-red-500/[0.06] border-red-500/20 line-through text-neutral-600" : "bg-white/[0.025] border-white/[0.07] text-neutral-300 hover:bg-white/[0.04]"}
-                    `}
-                  >
-                    <span className="text-sm">{svc?.icon} {svc?.name}</span>
-                    <span className={`text-xs ${s.wantsRemoved ? "text-red-400" : "text-neutral-600"}`}>
-                      {s.wantsRemoved ? "Will cancel" : "Tap to drop"}
-                    </span>
+
+            {/* Carrier & Cards summary */}
+            <div className="mb-5">
+              <p className="text-[11px] text-neutral-600 uppercase tracking-widest font-semibold mb-2">Your setup</p>
+              <div className="flex flex-col gap-1">
+                {carrier && CARRIERS[carrier] && (
+                  <div className="flex justify-between items-center px-4 py-3 rounded-xl border border-white/[0.07] bg-white/[0.025] text-neutral-300">
+                    <span className="text-sm">📱 {CARRIERS[carrier].name}</span>
+                    <span className="text-xs text-neutral-600">Carrier</span>
                   </div>
-                );
-              })}
+                )}
+                {cards.map((cardId) => {
+                  const card = CARDS[cardId];
+                  return card ? (
+                    <div key={cardId} className="flex justify-between items-center px-4 py-3 rounded-xl border border-white/[0.07] bg-white/[0.025] text-neutral-300">
+                      <span className="text-sm">💳 {card.name}</span>
+                      <span className="text-xs text-neutral-600">Credit card</span>
+                    </div>
+                  ) : null;
+                })}
+              </div>
+            </div>
+
+            {/* Subscriptions */}
+            <div className="mb-6">
+              <p className="text-[11px] text-neutral-600 uppercase tracking-widest font-semibold mb-2">Your subscriptions</p>
+              <div className="flex flex-col gap-1">
+                {userSubs.map((s) => {
+                  const svc = SERVICES[s.serviceId];
+                  return (
+                    <div
+                      key={s.serviceId}
+                      onClick={() => toggleWantRemoved(s.serviceId)}
+                      className={`flex justify-between items-center px-4 py-3 rounded-xl border cursor-pointer transition-all
+                        ${s.wantsRemoved ? "bg-red-500/[0.06] border-red-500/20 line-through text-neutral-600" : "bg-white/[0.025] border-white/[0.07] text-neutral-300 hover:bg-white/[0.04]"}
+                      `}
+                    >
+                      <span className="text-sm">{svc?.icon} {svc?.name}</span>
+                      <span className={`text-xs ${s.wantsRemoved ? "text-red-400" : "text-neutral-600"}`}>
+                        {s.wantsRemoved ? "Will cancel" : "Tap to drop"}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
             <button
               onClick={runOptimizer}
