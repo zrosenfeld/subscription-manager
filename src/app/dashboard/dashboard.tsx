@@ -49,7 +49,6 @@ export default function Dashboard({
   const [cards, setCards] = useState<string[]>([]);
   const [household, setHousehold] = useState<Household>({ adults: 1, kids: 0, homes: 1 });
   const [results, setResults] = useState<OptimizationResult | null>(null);
-  const [acceptedRecs, setAcceptedRecs] = useState<number[]>([]);
 
   const goBack = () => {
     const i = STEPS.indexOf(step);
@@ -233,10 +232,7 @@ export default function Dashboard({
                       ${selected ? "border-green-500/30 bg-green-500/[0.06] text-neutral-200" : "border-white/[0.07] bg-white/[0.025] text-neutral-500 hover:bg-white/[0.04]"}
                     `}
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">{selected ? "✓ " : ""}{c.name}</span>
-                      <span className="text-xs text-neutral-600">{c.fee > 0 ? `$${c.fee}/yr fee` : "No fee"}</span>
-                    </div>
+                    <span className="text-sm font-medium">{selected ? "✓ " : ""}{c.name}</span>
                   </button>
                 );
               })}
@@ -381,55 +377,28 @@ export default function Dashboard({
 
             {/* Recommendations */}
             <div className="flex flex-col gap-2">
-              {results.recommendations.map((rec, i) => {
-                const accepted = acceptedRecs.includes(i);
-                return (
-                  <div
-                    key={i}
-                    onClick={() => setAcceptedRecs((prev) => prev.includes(i) ? prev.filter((x) => x !== i) : [...prev, i])}
-                    className={`px-4 py-4 rounded-xl border cursor-pointer transition-all
-                      ${accepted ? "bg-green-500/[0.06] border-green-500/20" : "bg-white/[0.025] border-white/[0.07] hover:bg-white/[0.035]"}
-                    `}
-                  >
-                    <div className="flex justify-between items-start mb-1.5">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${accepted ? "border-green-500 bg-green-500" : "border-neutral-700 bg-transparent"}`}>
-                          {accepted && <span className="text-[#060708] text-xs font-bold">✓</span>}
-                        </div>
-                        <span className={`text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded border ${TYPE_COLORS[rec.type]}`}>
-                          {TYPE_LABELS[rec.type]}
-                        </span>
-                      </div>
-                      <span className="font-mono text-base font-bold text-green-500">
-                        -${rec.savings.toFixed(0)}<span className="text-xs text-green-600">/mo</span>
-                      </span>
-                    </div>
-                    <p className="text-sm font-semibold text-neutral-100 mb-1">{rec.action}</p>
-                    <p className="text-[13px] text-neutral-600 leading-relaxed">{rec.detail}</p>
+              {results.recommendations.map((rec, i) => (
+                <div
+                  key={i}
+                  className="px-4 py-4 rounded-xl border bg-white/[0.025] border-white/[0.07]"
+                >
+                  <div className="flex justify-between items-start mb-1.5">
+                    <span className={`text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded border ${TYPE_COLORS[rec.type]}`}>
+                      {TYPE_LABELS[rec.type]}
+                    </span>
+                    <span className="font-mono text-base font-bold text-green-500">
+                      -${rec.savings.toFixed(0)}<span className="text-xs text-green-600">/mo</span>
+                    </span>
                   </div>
-                );
-              })}
+                  <p className="text-sm font-semibold text-neutral-100 mb-1">{rec.action}</p>
+                  <p className="text-[13px] text-neutral-600 leading-relaxed">{rec.detail}</p>
+                </div>
+              ))}
             </div>
 
-            {/* Accept summary */}
-            {acceptedRecs.length > 0 && (
-              <div className="mt-5 p-5 rounded-2xl bg-green-500/[0.06] border border-green-500/20 text-center">
-                <p className="text-sm text-green-500 font-semibold mb-1">
-                  {acceptedRecs.length} optimization{acceptedRecs.length !== 1 ? "s" : ""} accepted
-                </p>
-                <p className="text-sm text-neutral-600 mb-3">
-                  Saving ${acceptedRecs.reduce((s, i) => s + (results.recommendations[i]?.savings || 0), 0).toFixed(0)}/mo ·{" "}
-                  ${(acceptedRecs.reduce((s, i) => s + (results.recommendations[i]?.savings || 0), 0) * 12).toFixed(0)}/year
-                </p>
-                <button className="px-7 py-3 rounded-xl bg-green-500 text-[#060708] text-sm font-bold hover:bg-green-400 transition-colors">
-                  Execute Plan →
-                </button>
-              </div>
-            )}
-
             <button
-              onClick={() => { setStep("services"); setResults(null); setAcceptedRecs([]); }}
-              className="mt-4 w-full py-3 rounded-xl border border-white/[0.07] text-neutral-600 text-sm hover:text-neutral-400 transition-colors"
+              onClick={() => { setStep("services"); setResults(null); }}
+              className="mt-6 w-full py-3.5 rounded-xl border border-white/[0.07] text-neutral-400 text-sm font-medium hover:text-neutral-300 hover:bg-white/[0.03] transition-colors"
             >
               Start over
             </button>
